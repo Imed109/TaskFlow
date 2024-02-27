@@ -25,10 +25,14 @@ const AddList = () => {
     if (newListTitle.trim() === "") {
       return; // Prevent adding empty list titles
     }
+    let newListId = 3; // Initialize ID counter
+
+    const generateNewListId = () => ++newListId;
+
     const newList = {
-      id: Math.random(), // Generate a unique ID
+      id: generateNewListId(),
       title: newListTitle,
-      cards: [], // Initialize cards array for the new list
+      cards: [],
     };
     dispatch(addList(newList)); // Dispatch addList action with the new list
     setNewListTitle(""); // Clear input after adding list
@@ -38,7 +42,7 @@ const AddList = () => {
     <div>
       {isAddingList ? (
         <div>
-          <Card style={{ minHeight: 50}}>
+          <Card style={{ minHeight: 50 }}>
             <TextareaAutosize
               style={{
                 resize: "none",
@@ -70,7 +74,8 @@ const AddList = () => {
           </div>
         </div>
       ) : (
-        <div style={{
+        <div
+          style={{
             opacity: 0.5,
             color: "inherit",
             backgroundColor: "#ccc",
@@ -81,7 +86,9 @@ const AddList = () => {
             height: 36,
             width: 272,
             paddingLeft: 10,
-          }} onClick={handleAddListClick}>
+          }}
+          onClick={handleAddListClick}
+        >
           <Icon>add</Icon>
           <p>Add another List</p>
         </div>

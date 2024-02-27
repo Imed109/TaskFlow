@@ -20,7 +20,7 @@ const listsSlice = createSlice({
       },
       {
         title: "testing list number 2",
-        id: 33,
+        id: 2,
         cards: [
           {
             id: 3,
@@ -38,34 +38,45 @@ const listsSlice = createSlice({
     setLists: (state, action) => {
       state.lists = action.payload;
     },
-    addList: (state, action) => {
-      state.lists.push(action.payload); // Add the new list to the lists array
-    }
-    // You can add other reducers here if needed
+    addCard: (state, action) => {
+      const { listId, newCard } = action.payload;
+      const listIndex = state.lists.findIndex(list => list.id === parseInt(listId));
+      console.log(listId)
+      if (listIndex !== -1) {
+        state.lists[listIndex].cards.push(newCard);
+      } else {
+        console.error("List not found!");
+      }
+    },
+    
+    reorderCards: (state, action) => {
+      const { source, destination } = action.payload;
+      const { lists } = state;
+
+      // Check if source and destination are defined
+      if (source && destination) {
+        // Retrieve source and destination list indices
+        const sourceListIndex = lists.findIndex(list => list.id === parseInt(source.droppableId));
+        const destListIndex = lists.findIndex(list => list.id === parseInt(destination.droppableId));
+
+        // Ensure source and destination lists exist
+        if (sourceListIndex !== -1 && destListIndex !== -1) {
+          const sourceList = lists[sourceListIndex];
+          const destList = lists[destListIndex];
+
+          // Remove card from source list
+          const [movedCard] = sourceList.cards.splice(source.index, 1);
+
+          // Add card to destination list
+          destList.cards.splice(destination.index, 0, movedCard);
+
+    
+        }
+      }
+    },
   },
 });
 
-// Export action creators
-export const { setLists, addList } = listsSlice.actions;
+export const { setLists, addList, reorderCards,addCard } = listsSlice.actions;
 
-// Define and export addCard action creator
-export const addCard = (listId, newCard) => (dispatch, getState) => {
-  // Retrieve the current state
-  const state = getState();
-
-  // Find the list by listId
-  const list = state.lists.lists.find((list) => list.id === listId);
-  if (list) {
-    // Dispatch the setLists action with updated lists
-    dispatch(setLists([
-      ...state.lists.lists.filter((list) => list.id !== listId), // Remove the list to be updated
-      {
-        ...list, // Spread the properties of the existing list
-        cards: [...list.cards, newCard] // Add the new card to the cards array
-      }
-    ]));
-  } else {
-    console.error("List not found!"); // Log an error if the list is not found
-  }
-};
 export default listsSlice.reducer;

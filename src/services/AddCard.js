@@ -27,7 +27,7 @@ const AddCard = ({ listId }) => {
       id: Math.random(), // You might want to generate a unique ID in a better way
       text: newCardText,
     };
-    dispatch(addCard( listId, newCard )); // Dispatch addCard action with listId and newCard
+    dispatch(addCard( {listId, newCard} )); // Dispatch addCard action with listId and newCard
     setIsAddingCard(false);
     setNewCardText("");
         console.log("the id :" ,listId);
